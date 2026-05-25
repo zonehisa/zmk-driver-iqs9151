@@ -1,0 +1,22 @@
+# Copyright (c) 2026
+# SPDX-License-Identifier: MIT
+
+description: Input processor that converts pinch wheel events to zoom behavior taps
+
+compatible: "zmk,input-processor-pinch-zoom"
+
+include: ip_zero_param.yaml
+
+properties:
+  trigger-code:
+    type: int
+    required: true
+    description: Key event code that marks an active pinch session.
+  wheel-code:
+    type: int
+    required: true
+    description: Relative event code carrying pinch direction and magnitude.
+  bindings:
+    type: phandle-array
+    required: true
+    description: First binding is zoom-in, second binding is zoom-out.

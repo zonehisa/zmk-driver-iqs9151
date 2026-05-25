@@ -39,3 +39,10 @@ menuconfig ZMK_INPUT_PROCESSOR_BEHAVIORS_CONSUME
       Invoke behaviors for matched events, then neutralize the event so it
       does not generate mouse button output. This avoids relying on STOP
       being honored in layer overrides.
+
+menuconfig ZMK_INPUT_PROCESSOR_PINCH_ZOOM
+    bool "Pinch zoom input processor"
+    default y
+    help
+      Convert IQS9151 pinch BTN/WHEEL events into zoom-in and zoom-out
+      behavior taps.
