@@ -4,8 +4,6 @@
 
 #define DT_DRV_COMPAT zmk_input_processor_pinch_zoom
 
-#include <stdlib.h>
-
 #include <zephyr/dt-bindings/input/input-event-codes.h>
 #include <zephyr/device.h>
 #include <zephyr/kernel.h>
@@ -29,6 +27,7 @@ struct pinch_zoom_config {
 
 struct pinch_zoom_data {
     bool active;
+    bool sent;
 };
 
 static int pinch_zoom_tap_binding(const struct pinch_zoom_config *cfg,
@@ -69,6 +68,9 @@ static int pinch_zoom_handle_event(const struct device *dev, struct input_event 
 
     if (event->type == INPUT_EV_KEY && event->code == cfg->trigger_code) {
         data->active = event->value != 0;
+        if (!data->active) {
+            data->sent = false;
+        }
         pinch_zoom_consume_event(event);
         return ZMK_INPUT_PROC_CONTINUE;
     }
@@ -77,17 +79,14 @@ static int pinch_zoom_handle_event(const struct device *dev, struct input_event 
         return ZMK_INPUT_PROC_CONTINUE;
     }
 
-    if (event->value != 0) {
+    if (event->value != 0 && !data->sent) {
         const struct zmk_behavior_binding *binding =
             event->value > 0 ? &cfg->zoom_in : &cfg->zoom_out;
-        int taps = MIN(abs(event->value), 3);
-
-        for (int i = 0; i < taps; i++) {
-            int ret = pinch_zoom_tap_binding(cfg, binding, state);
-            if (ret < 0) {
-                return ret;
-            }
+        int ret = pinch_zoom_tap_binding(cfg, binding, state);
+        if (ret < 0) {
+            return ret;
         }
+        data->sent = true;
     }
 
     pinch_zoom_consume_event(event);
