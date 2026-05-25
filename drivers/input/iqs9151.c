@@ -1299,6 +1299,19 @@ static void iqs9151_two_finger_update(struct iqs9151_data *data,
         }
 
         if (state->mode == IQS9151_2F_MODE_SCROLL) {
+            const int32_t abs_center =
+                MAX(iqs9151_abs32(state->centroid_dx), iqs9151_abs32(state->centroid_dy));
+            const int32_t abs_dist = iqs9151_abs32(state->distance_delta);
+
+            if (IS_ENABLED(CONFIG_INPUT_IQS9151_2F_PINCH_ENABLE) &&
+                abs_dist >= TWO_FINGER_PINCH_START_DISTANCE &&
+                abs_dist > abs_center) {
+                state->mode = IQS9151_2F_MODE_PINCH;
+                result->pinch_started = true;
+            }
+        }
+
+        if (state->mode == IQS9151_2F_MODE_SCROLL) {
             result->scroll_active = true;
             if (IS_ENABLED(CONFIG_INPUT_IQS9151_SCROLL_X_ENABLE)) {
                 result->scroll_x = (int16_t)CLAMP(step_x, INT16_MIN, INT16_MAX);
