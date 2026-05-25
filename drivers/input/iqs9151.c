@@ -1287,7 +1287,7 @@ static void iqs9151_two_finger_update(struct iqs9151_data *data,
 
             if (IS_ENABLED(CONFIG_INPUT_IQS9151_2F_PINCH_ENABLE) &&
                 abs_dist >= TWO_FINGER_PINCH_START_DISTANCE &&
-                abs_dist > abs_center) {
+                abs_dist >= (abs_center * 2)) {
                 state->mode = IQS9151_2F_MODE_PINCH;
                 result->pinch_started = true;
                 state->tap_candidate = false;
@@ -1305,7 +1305,7 @@ static void iqs9151_two_finger_update(struct iqs9151_data *data,
 
             if (IS_ENABLED(CONFIG_INPUT_IQS9151_2F_PINCH_ENABLE) &&
                 abs_dist >= TWO_FINGER_PINCH_START_DISTANCE &&
-                abs_dist > abs_center) {
+                abs_dist >= (abs_center * 3)) {
                 state->mode = IQS9151_2F_MODE_PINCH;
                 result->pinch_started = true;
             }
