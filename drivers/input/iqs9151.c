@@ -1285,15 +1285,15 @@ static void iqs9151_two_finger_update(struct iqs9151_data *data,
             const bool scroll_enabled = IS_ENABLED(CONFIG_INPUT_IQS9151_SCROLL_X_ENABLE) ||
                                         IS_ENABLED(CONFIG_INPUT_IQS9151_SCROLL_Y_ENABLE);
 
-            if (scroll_enabled && abs_center >= TWO_FINGER_SCROLL_START_MOVE) {
-                state->mode = IQS9151_2F_MODE_SCROLL;
-                result->scroll_started = true;
-                state->tap_candidate = false;
-            } else if (IS_ENABLED(CONFIG_INPUT_IQS9151_2F_PINCH_ENABLE) &&
-                       abs_dist >= TWO_FINGER_PINCH_START_DISTANCE &&
-                       abs_dist > abs_center) {
+            if (IS_ENABLED(CONFIG_INPUT_IQS9151_2F_PINCH_ENABLE) &&
+                abs_dist >= TWO_FINGER_PINCH_START_DISTANCE &&
+                abs_dist > abs_center) {
                 state->mode = IQS9151_2F_MODE_PINCH;
                 result->pinch_started = true;
+                state->tap_candidate = false;
+            } else if (scroll_enabled && abs_center >= TWO_FINGER_SCROLL_START_MOVE) {
+                state->mode = IQS9151_2F_MODE_SCROLL;
+                result->scroll_started = true;
                 state->tap_candidate = false;
             }
         }
